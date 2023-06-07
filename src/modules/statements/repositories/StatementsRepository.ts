@@ -1,10 +1,17 @@
-import { getRepository, Repository } from "typeorm";
+import {
+  getRepository,
+  Repository,
+} from 'typeorm';
 
-import { Statement } from "../entities/Statement";
-import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatementDTO";
-import { IGetBalanceDTO } from "../useCases/getBalance/IGetBalanceDTO";
-import { IGetStatementOperationDTO } from "../useCases/getStatementOperation/IGetStatementOperationDTO";
-import { IStatementsRepository } from "./IStatementsRepository";
+import { Statement } from '../entities/Statement';
+import {
+  ICreateStatementDTO,
+} from '../useCases/createStatement/ICreateStatementDTO';
+import { IGetBalanceDTO } from '../useCases/getBalance/IGetBalanceDTO';
+import {
+  IGetStatementOperationDTO,
+} from '../useCases/getStatementOperation/IGetStatementOperationDTO';
+import { IStatementsRepository } from './IStatementsRepository';
 
 export class StatementsRepository implements IStatementsRepository {
   private repository: Repository<Statement>;
@@ -17,13 +24,15 @@ export class StatementsRepository implements IStatementsRepository {
     user_id,
     amount,
     description,
-    type
+    type,
+    sender_id
   }: ICreateStatementDTO): Promise<Statement> {
     const statement = this.repository.create({
       user_id,
       amount,
       description,
-      type
+      type,
+      sender_id
     });
 
     return this.repository.save(statement);
@@ -38,8 +47,7 @@ export class StatementsRepository implements IStatementsRepository {
   async getUserBalance({ user_id, with_statement = false }: IGetBalanceDTO):
     Promise<
       { balance: number } | { balance: number, statement: Statement[] }
-    >
-  {
+    > {
     const statement = await this.repository.find({
       where: { user_id }
     });
